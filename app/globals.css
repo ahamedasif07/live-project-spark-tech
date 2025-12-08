@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Hexagon Shape */
+.clip-hex {
+  clip-path: polygon(
+    50% 0%,
+    93% 25%,
+    93% 75%,
+    50% 100%,
+    7% 75%,
+    7% 25%
+  );
+}
