@@ -1,95 +1,64 @@
 "use client";
-
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-
-const labels = ["POSITION", "RESEARCH", "TEST", "CREATE", "DEFINE", "DELIVER"];
+import { useEffect, useState } from "react";
+import "./hexagon.css";
 
 export default function HexagonScroll() {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
+  const [progress, setProgress] = useState(0);
+  const [angle, setAngle] = useState(0);
 
-  // Fade overlay
-  const overlayOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
+  const labels = ["IMAGINE", "NAVIGATE", "POSITION"];
+  const activeLabel = labels[Math.floor((angle % 360) / 120)];
 
-  // HEXAGON BORDER LENGTH
-  const strokeLength = 1220; // perfect for your hexagon
+  useEffect(() => {
+    const handleScroll = () => {
+      const max = document.body.scrollHeight - window.innerHeight;
+      const p = window.scrollY / max;
 
-  // DRAWING EFFECT (border fill)
-  const strokeOffset = useTransform(scrollYProgress, [0, 1], [strokeLength, 0]);
+      setProgress(p);
+      setAngle(p * 360);
+    };
 
-  // COLOR FADE-IN
-  const strokeColorOpacity = useTransform(scrollYProgress, [0, 1], [0.2, 1]);
-
-  // Small center circle animation
-  const circleScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const circleOpacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
-
-  const activeLabel = useTransform(scrollYProgress, (v) =>
-    Math.floor(v * 6)
-  );
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <div
-      ref={ref}
-      className="relative w-full md:w-1/2 flex items-center justify-center p-10 bg-black"
-      style={{ height: "100vh" }}
-    >
-      {/* Background image */}
-      <div className="absolute inset-0">
-        <img
-          src="/your-image.jpg"
-          alt="bg"
-          className="object-cover w-full h-full"
-        />
+    <div className="w-full h-screen flex items-center justify-center bg-black">
+      <div className="relative w-[500px] h-[500px]">
+        {/* DEFAULT ALWAYS-VISIBLE HEXAGON */}
+        <svg className="absolute inset-0" viewBox="0 0 200 200">
+          <polygon
+            points="100,10 186,55 186,145 100,190 14,145 14,55"
+            className="hex-default"
+          />
+        </svg>
 
-        {/* Dark overlay */}
-        <motion.div
-          className="absolute inset-0 bg-black"
-          style={{ opacity: overlayOpacity }}
-        />
+        {/* SCROLL-ACTIVATED ANIMATED HIGHLIGHT */}
+        <svg className="absolute inset-0" viewBox="0 0 200 200">
+          <polygon
+            points="100,10 186,55 186,145 100,190 14,145 14,55"
+            className="hex-anim"
+            style={{
+              strokeDasharray: 600,
+              strokeDashoffset: 600 - progress * 600,
+            }}
+          />
+        </svg>
+
+        {/* Rotating Triangle */}
+        <div
+          className="triangle-rotator"
+          style={{ transform: `rotate(${angle}deg)` }}
+        >
+          <div className="triangle"></div>
+        </div>
+
+        {/* Center Dot */}
+        <div className="center-dot"></div>
+
+        {/* Side Text */}
+        <div className="side-text">{activeLabel}</div>
       </div>
-
-      {/* Hexagon border drawing animation */}
-      <motion.svg
-        width="350"
-        height="350"
-        viewBox="0 0 173 200"
-        className="relative"
-      >
-        <motion.path
-          d="M86.5 5 L167 52.5 V147.5 L86.5 195 L6 147.5 V52.5 Z"
-          stroke="#f1c800"
-          strokeWidth={4}
-          fill="none"
-          strokeDasharray={strokeLength}
-          style={{
-            strokeDashoffset: strokeOffset,
-            opacity: strokeColorOpacity, // smooth yellow fade
-          }}
-        />
-      </motion.svg>
-
-      {/* Small yellow center circle */}
-      <motion.div
-        className="absolute"
-        style={{
-          scale: circleScale,
-          opacity: circleOpacity,
-        }}
-      >
-        <div className="w-10 h-10 rounded-full bg-[#f1c800]" />
-      </motion.div>
-
-      {/* Text label */}
-      <motion.p
-        className="absolute bottom-14 right-14 text-[#f1c800] text-xl tracking-wider rotate-150"
-      >
-        {labels[Math.max(0, Math.min(5, Math.round(activeLabel.get())))]}
-      </motion.p>
     </div>
   );
 }

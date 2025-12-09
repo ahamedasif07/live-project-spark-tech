@@ -1,0 +1,62 @@
+/* Default hexagon border ALWAYS visible */
+.hex-default {
+  fill: none;
+  stroke: rgb(113, 63, 18); /* yellow-900 */
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+
+/* Animated border (only activates on scroll) */
+.hex-anim {
+  fill: none;
+  stroke: rgb(234, 179, 8); /* brighter highlight */
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-dasharray: 600;
+  transition: stroke-dashoffset 0.2s linear;
+}
+
+/* Triangle */
+.triangle-rotator {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
+  transition: transform 0.15s linear;
+}
+
+.triangle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 40px solid transparent;
+  border-right: 40px solid transparent;
+  border-bottom: 120px solid rgba(234, 179, 8, 0.5);
+  transform: translate(-50%, -65%);
+}
+
+/* Center Dot */
+.center-dot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: rgb(234, 179, 8);
+  border-radius: 50%;
+  top: calc(50% - 8px);
+  left: calc(50% - 8px);
+  border: 2px solid rgba(234, 179, 8, 0.4);
+}
+
+/* Side Label */
+.side-text {
+  position: absolute;
+  right: -80px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  color: rgb(234, 179, 8);
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
