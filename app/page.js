@@ -3,8 +3,8 @@ import ApproachSection from "./Components/approce/Approce";
 
 export default function Home() {
   return (
-    <div >
-      <ApproachSection/>
+    <div className="overflow-hidden">
+      <ApproachSection />
     </div>
   );
 }
